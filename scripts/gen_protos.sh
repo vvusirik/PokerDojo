@@ -8,23 +8,21 @@ popd () {
 
 echo "Generating Python gRPC code"
 ROOT_DIR="$(git rev-parse --show-toplevel)"
-pushd "$ROOT_DIR/api/generated"
-source ../venv/bin/activate
+OUT_DIR="$ROOT_DIR/api/generated"
+pushd "$ROOT_DIR/api/"
+source ./venv/bin/activate
 python -m grpc_tools.protoc \
-    -I ../../protos \
-    --python_out=. \
-    --pyi_out=. \
-    --grpc_python_out=. \
-    ../../protos/*.proto
+    --python_out=$OUT_DIR \
+    --pyi_out=$OUT_DIR \
+    --grpc_python_out=$OUT_DIR \
+    -I $ROOT_DIR/protos $ROOT_DIR/protos/*.proto
 
 echo "Generating Typescript gRPC code"
+OUT_DIR="$ROOT_DIR/web/generated"
 pushd "$ROOT_DIR/web"
-protoc \
-  --plugin="protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto" \
-  --ts_proto_out=./generated \
-  --ts_proto_opt="esModuleInterop=true,forceLongToString=true,outputServices=grpc-js" \
-  -I ../protos/ \
-  ../protos/equity.proto
+protoc -I=$ROOT_DIR/protos $ROOT_DIR/protos/*.proto \
+  --ts_out=import_style=commonjs:$OUT_DIR \
+  --grpc-web_out=import_style=commonjs,mode=grpcwebtext:$OUT_DIR
+popd
+popd
 
-popd
-popd

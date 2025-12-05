@@ -15,6 +15,7 @@
     "ag-charts-community": "^12.3.1",
     "ag-charts-enterprise": "^12.3.1",
     "ag-charts-react": "^12.3.1",
+    "google-protobuf": "^4.0.1",
     "grpc-tools": "^1.13.1",
     "grpc-web": "^2.0.2",
     "next": "16.0.6",
