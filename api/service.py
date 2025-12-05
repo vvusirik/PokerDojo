@@ -1,3 +1,4 @@
+import logging
 from concurrent.futures import ThreadPoolExecutor
 
 import equity_pb2
@@ -10,6 +11,9 @@ from utils.equity import (
     hand_vs_range_equity,
     hand_vs_range_equity_heatmap,
 )
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 
 class EquityCalculatorServicer(equity_pb2_grpc.EquityCalculatorServiceServicer):
@@ -102,7 +106,7 @@ def serve(port=50051):
     )
     server.add_insecure_port(f"[::]:{port}")
     server.start()
-    print(f"Server started on port {port}")
+    logger.info(f"Server started on port {port}")
     server.wait_for_termination()
 
 
