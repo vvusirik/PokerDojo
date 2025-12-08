@@ -2,27 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { AgCharts } from "ag-charts-react";
-import { StartingHands } from "../utils/constants";
 import "ag-charts-enterprise";
+import { useQuery } from "@tanstack/react-query";
 
 interface EquityHeatmapEntry {
     rankX: string;
     rankY: string;
     equity: number;
-}
-
-function getData(): Array<EquityHeatmapEntry> {
-    let hands = [];
-    for (let i = 0; i < 13; i++) {
-        for (let j = 0; j < 13; j++) {
-            hands.push({
-                rankX: i.toString(),
-                rankY: j.toString(),
-                equity: 0,
-            });
-        }
-    }
-    return hands;
 }
 
 async function getEquityHeatmap(): Promise<Array<EquityHeatmapEntry>> {
@@ -56,8 +42,16 @@ async function getEquityHeatmap(): Promise<Array<EquityHeatmapEntry>> {
 }
 
 export default function EquityGrid() {
-    const [options, setOptions] = useState({
-        data: getData(),
+    const { isPending, error, data } = useQuery({
+        queryKey: ["equityHeatmap"],
+        queryFn: getEquityHeatmap,
+    });
+
+    if (isPending) return <div>Loading...</div>;
+    if (error) return <div>Error loading data</div>;
+
+    const options = {
+        data: data,
         title: {
             text: "Hand Equity",
         },
@@ -76,16 +70,7 @@ export default function EquityGrid() {
                 },
             },
         ],
-    });
-
-    useEffect(() => {
-        getEquityHeatmap().then((data) => {
-            setOptions((prev) => ({
-                ...prev,
-                data,
-            }));
-        });
-    }, []);
+    };
 
     return <AgCharts options={options} />;
 }
