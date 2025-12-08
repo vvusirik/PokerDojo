@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { AgCharts } from "ag-charts-react";
 import "ag-charts-enterprise";
 import { useQuery } from "@tanstack/react-query";
