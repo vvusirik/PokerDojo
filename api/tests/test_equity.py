@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from utils.equity import (
+from calculators.equity import (
     hand_range_vs_random_equity,
     hand_vs_hand_equity,
     hand_vs_random_equity_heatmap,
