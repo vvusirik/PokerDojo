@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   api:
+    image: poker-dojo-api
     build:
       context: ./api
       dockerfile: Dockerfile
