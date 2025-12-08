@@ -1,5 +1,5 @@
 import os
-from functools import partial
+from functools import lru_cache, partial
 from typing import Optional
 
 import eval7
@@ -7,6 +7,8 @@ import numpy as np
 from eval7 import Card, Deck, HandRange
 from utils.constants import STARTING_HANDS
 from utils.parallelize import process_map
+
+_CACHE_SIZE = 2048
 
 
 def _remove_cards_from_deck(deck: Deck, cards: list[Card]) -> Deck:
@@ -37,6 +39,7 @@ def _filter_valid_hands(
     return villain_hand_range
 
 
+@lru_cache(maxsize=_CACHE_SIZE)
 def hand_vs_random_hand_equity(hand_str: str, iterations: int = int(1e5)) -> float:
     hand_cards = _hand_str_to_cards(hand_str)
     wins, ties, losses = 0, 0, 0
@@ -61,6 +64,7 @@ def hand_vs_random_hand_equity(hand_str: str, iterations: int = int(1e5)) -> flo
     return (wins + 0.5 * ties) / iterations
 
 
+@lru_cache(maxsize=_CACHE_SIZE)
 def hand_vs_hand_equity(
     hero_hand: str, villain_hand: str, iterations: int = int(1e5)
 ) -> float:
@@ -89,6 +93,7 @@ def hand_vs_hand_equity(
     return (wins + 0.5 * ties) / iterations
 
 
+@lru_cache(maxsize=_CACHE_SIZE)
 def hand_vs_range_equity(
     hand_str: str, range_str: str, iterations: int = int(1e5)
 ) -> float:
@@ -120,6 +125,7 @@ def hand_vs_range_equity(
     return (wins + 0.5 * ties) / iterations
 
 
+@lru_cache(maxsize=_CACHE_SIZE)
 def hand_range_vs_random_equity(range_str: str, iterations: int = int(1e5)) -> float:
     wins, ties, losses = 0, 0, 0
     hand_range = HandRange(range_str)
