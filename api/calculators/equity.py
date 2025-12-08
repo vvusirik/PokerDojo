@@ -159,6 +159,7 @@ def hand_range_vs_random_equity(range_str: str, iterations: int = int(1e5)) -> f
     return (wins + 0.5 * ties) / iterations
 
 
+@lru_cache(maxsize=_CACHE_SIZE)
 def hand_vs_random_equity_heatmap(workers: Optional[int] = None) -> dict[str, float]:
     workers = workers or os.cpu_count()
     equities = process_map(hand_range_vs_random_equity, STARTING_HANDS, workers)
@@ -166,6 +167,7 @@ def hand_vs_random_equity_heatmap(workers: Optional[int] = None) -> dict[str, fl
     return equity_grid
 
 
+@lru_cache(maxsize=_CACHE_SIZE)
 def hand_vs_range_equity_heatmap(
     hand_str: str, workers: Optional[int] = None
 ) -> dict[str, float]:
